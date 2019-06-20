@@ -1036,6 +1036,9 @@ void LaunchConv2DBackpropInputOp<GPUDevice, T>::operator()(
     OP_REQUIRES_OK(ctx, BestCudnnConvAlgorithm(results, &algorithm_config));
     AutoTuneConvBwdData::GetInstance()->Insert(conv_parameters,
                                                algorithm_config);
+
+    VLOG(-1) << "Convolution Algorithm: "
+	     << algorithm_config.algorithm()->algo_id();
   }
 
   bool cudnn_launch_status =

@@ -985,6 +985,9 @@ void LaunchConv2DOp<GPUDevice, T>::operator()(
                            stream->parent(), results);
     OP_REQUIRES_OK(ctx, BestCudnnConvAlgorithm(results, &algorithm_config));
     AutoTuneConv::GetInstance()->Insert(conv_parameters, algorithm_config);
+
+    VLOG(-1) << "Convolution Algorithm: "
+	     << algorithm_config.algorithm()->algo_id();
   }
 
   VLOG(4) << "Convolution Algorithm: "
