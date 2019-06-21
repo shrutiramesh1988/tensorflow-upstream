@@ -136,7 +136,8 @@ Status BestCudnnConvAlgorithm(absl::Span<const AutotuneResult> results,
     return errors::NotFound("No algorithm worked!");
   }
   algo->set_algorithm({best_result->conv().algorithm(),
-                       best_result->conv().tensor_ops_enabled()});
+                       best_result->conv().tensor_ops_enabled(),
+		       best_result->scratch_bytes()});
   if (best_result_no_scratch != results.end() &&
       best_result_no_scratch->scratch_bytes() == 0) {
     algo->set_algorithm_no_scratch(

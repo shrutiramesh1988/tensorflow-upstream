@@ -181,7 +181,8 @@ StatusOr<CudnnConvParams> GetCudnnConvParams(
   const Shape* output_shape;
 
   params.algorithm = se::dnn::AlgorithmConfig(se::dnn::AlgorithmDesc(
-      backend_config.algorithm(), backend_config.tensor_ops_enabled()));
+      backend_config.algorithm(), backend_config.tensor_ops_enabled(),
+      backend_config.scratch_size()));
   params.conv_result_scale = backend_config.conv_result_scale();
 
   switch (params.kind) {

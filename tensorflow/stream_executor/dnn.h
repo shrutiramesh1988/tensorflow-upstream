@@ -766,10 +766,12 @@ class AlgorithmDesc {
  public:
   typedef int64 Index;
   AlgorithmDesc() : AlgorithmDesc(0, false) {}
-  AlgorithmDesc(Index a, bool use_tensor_ops) {
+  AlgorithmDesc(Index a, bool use_tensor_ops) : AlgorithmDesc(a, use_tensor_ops, 0) {}
+  AlgorithmDesc(Index a, bool use_tensor_ops, size_t s) {
     proto_.set_algo_id(a);
     proto_.set_math_type(use_tensor_ops ? AlgorithmProto::TENSOR_OP_MATH
                                         : AlgorithmProto::DEFAULT_MATH);
+    scratch_size_ = s;
   }
   bool tensor_ops_enabled() const {
     return proto_.math_type() == AlgorithmProto::TENSOR_OP_MATH;
@@ -783,8 +785,10 @@ class AlgorithmDesc {
 
   AlgorithmProto ToProto() const { return proto_; }
 
+  size_t scratch_size() { return scratch_size_; }
  private:
   AlgorithmProto proto_;
+  size_t scratch_size_;
 };
 
 // Describes the result from a perf experiment.

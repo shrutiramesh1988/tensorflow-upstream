@@ -390,6 +390,7 @@ StatusOr<bool> MiopenConvAlgorithmPicker::RunOnInstruction(
                       instr->backend_config<CudnnConvBackendConfig>());
   backend_config.set_algorithm(best_algo.algorithm);
   backend_config.set_tensor_ops_enabled(best_algo.tensor_ops_enabled);
+  backend_config.set_scratch_size(best_algo.scratch_bytes);
 
   HloInstruction* new_call = computation->AddInstruction(
       instr->CloneWithNewOperands(new_call_shape, instr->operands()));
