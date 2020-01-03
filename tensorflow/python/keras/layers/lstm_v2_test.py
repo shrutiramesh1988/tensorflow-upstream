@@ -585,6 +585,8 @@ class LSTMV2Test(keras_parameterized.TestCase):
 
   @test_util.run_v2_only
   def test_float64_LSTM(self):
+    if build_info.is_rocm_build:
+        self.skipTest("Skipping the test as ROCm MIOpen does not support float64 yet.")
     num_samples = 2
     timesteps = 3
     embedding_dim = 4
