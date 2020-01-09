@@ -26,6 +26,7 @@ py_test(
     tags = [
         "no_oss_py2",
         "no_pip",
+        "no_rocm",
         "noasan",
         "nomsan",
         "notsan",

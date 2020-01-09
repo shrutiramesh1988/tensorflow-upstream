@@ -549,7 +549,10 @@ tf_py_test(
     srcs = ["integration_test.py"],
     python_version = "PY3",
     shard_count = 16,
-    tags = ["notsan"],
+    tags = [
+        "no_rocm",
+        "notsan",
+    ],
     deps = [
         ":keras",
         "//tensorflow/python:client_testlib",
@@ -1084,7 +1087,10 @@ tf_py_test(
     srcs = ["layers/gru_test.py"],
     python_version = "PY3",
     shard_count = 4,
-    tags = ["notsan"],  # http://b/62136390
+    tags = [
+        "no_rocm",
+        "notsan",  # http://b/62136390
+    ],
     deps = [
         ":keras",
         "//tensorflow/python:client_testlib",
@@ -1100,6 +1106,7 @@ tf_py_test(
     python_version = "PY3",
     shard_count = 4,
     tags = [
+        "no_rocm",
         "noasan",  # times out b/63678675
         "notsan",  # http://b/62189182
     ],
@@ -1117,6 +1124,7 @@ tf_py_test(
     srcs = ["layers/recurrent_test.py"],
     python_version = "PY3",
     shard_count = 10,
+    tags = ["no_rocm"],
     deps = [
         ":keras",
         "//tensorflow/python:client_testlib",
@@ -1871,6 +1879,7 @@ tf_py_test(
     shard_count = 4,
     tags = [
         "no_oss_py35",  # b/147011479
+        "no_rocm",
         "no_windows",
     ],
     deps = [
