@@ -59,4 +59,5 @@ tf_cc_test(
         "@llvm-project//mlir:StandardDialectRegistration",
         "@llvm-project//mlir:Transforms",
     ],
+    tags = ["no_rocm"],
 )
