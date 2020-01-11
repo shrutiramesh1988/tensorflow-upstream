@@ -1335,7 +1335,6 @@ def gpu_lstm(inputs, init_h, init_c, kernel, recurrent_kernel, bias, mask,
   # CuDNN has an extra set of bias for inputs, we disable them (setting to 0),
   # so that mathematically it is same as the canonical LSTM implementation.
   full_bias = array_ops.concat((array_ops.zeros_like(bias), bias), 0)
-  print(weights)
   if build_info.is_rocm_build:
     # ROCm MIOpen's weight sequence for LSTM is different from both canonical
     # and Cudnn format
