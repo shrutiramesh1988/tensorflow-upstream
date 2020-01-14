@@ -2983,6 +2983,7 @@ tf_py_test(
     size = "small",
     srcs = ["ops/collective_ops_test.py"],
     python_version = "PY3",
+    tags = ["no_rocm"],
     deps = [
         ":client_testlib",
         ":collective_ops",
@@ -6152,6 +6153,7 @@ tf_py_test(
     size = "small",
     srcs = ["framework/convert_to_constants_test.py"],
     python_version = "PY3",
+    tags = ["no_rocm"],
     deps = [
         "client_testlib",
         "framework_test_lib",
@@ -6176,7 +6178,10 @@ tf_py_test(
     size = "small",
     srcs = ["lib/io/file_io_test.py"],
     python_version = "PY3",
-    tags = ["no_windows"],
+    tags = [
+        "no_rocm",
+        "no_windows",
+    ],
     deps = [
         ":client_testlib",
         ":errors",
@@ -6900,6 +6905,7 @@ tf_py_test(
     srcs = ["layers/pooling_test.py"],
     main = "layers/pooling_test.py",
     python_version = "PY3",
+    tags = ["no_rocm"],
     deps = [
         ":client_testlib",
         ":framework_test_lib",
