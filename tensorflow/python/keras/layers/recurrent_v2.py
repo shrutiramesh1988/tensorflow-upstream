@@ -568,7 +568,7 @@ def standard_gru(inputs, init_h, kernel, recurrent_kernel, bias, activation,
 
 
 def gpu_gru(inputs, init_h, kernel, recurrent_kernel, bias, mask, time_major,
-              go_backwards, sequence_lengths):
+            go_backwards, sequence_lengths):
   """GRU with CuDNN implementation which is only available for GPU."""
   if not time_major and mask is None:
     inputs = array_ops.transpose(inputs, perm=(1, 0, 2))
@@ -703,8 +703,8 @@ def gru_with_backend_selection(inputs, init_h, kernel, recurrent_kernel, bias,
   }
 
   def gpu_gru_with_fallback(inputs, init_h, kernel, recurrent_kernel, bias,
-                              mask, time_major, go_backwards, activation,
-                              recurrent_activation, sequence_lengths):
+                            mask, time_major, go_backwards, activation,
+                            recurrent_activation, sequence_lengths):
     """Use CuDNN kernel when mask is none or strictly right padded."""
     if mask is None:
       return gpu_gru(
@@ -1287,7 +1287,7 @@ def standard_lstm(inputs, init_h, init_c, kernel, recurrent_kernel, bias,
 
 
 def gpu_lstm(inputs, init_h, init_c, kernel, recurrent_kernel, bias, mask,
-               time_major, go_backwards, sequence_lengths):
+             time_major, go_backwards, sequence_lengths):
   """LSTM with either CuDNN or ROCm implementation which is only available for GPU.
 
   Note that currently only right padded data is supported, or the result will be
@@ -1343,8 +1343,8 @@ def gpu_lstm(inputs, init_h, init_c, kernel, recurrent_kernel, bias, mask,
     # f is forget gate weights.
     # o is output gate weights.
     # c is cell gate weights.
-    weights=[weights[x] for x in (0,1,3,2,4,5,7,6)]
-    full_bias=[full_bias[x] for x in (0,1,3,2,4,5,7,6)]
+    weights = [weights[x] for x in (0, 1, 3, 2, 4, 5, 7, 6)]
+    full_bias = [full_bias[x] for x in (0, 1, 3, 2, 4, 5, 7, 6)]
 
   params = _canonical_to_params(
       weights=weights,
@@ -1458,8 +1458,8 @@ def lstm_with_backend_selection(inputs, init_h, init_c, kernel,
   }
 
   def gpu_lstm_with_fallback(inputs, init_h, init_c, kernel, recurrent_kernel,
-                               bias, mask, time_major, go_backwards, activation,
-                               recurrent_activation, sequence_lengths):
+                             bias, mask, time_major, go_backwards, activation,
+                             recurrent_activation, sequence_lengths):
     """Use CuDNN kernel when mask is none or strictly right padded."""
     if mask is None:
       return gpu_lstm(
