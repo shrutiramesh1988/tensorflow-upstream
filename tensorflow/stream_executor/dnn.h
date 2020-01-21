@@ -1385,11 +1385,11 @@ class DnnSupport {
       std::vector<AlgorithmDesc>* out_algorithms);
 
   virtual bool GetMIOpenConvolveAlgorithms(
-      dnn::ConvolutionKind kind, Stream* stream, dnn::DataType element_type,
+      dnn::ConvolutionKind kind, dnn::DataType element_type, Stream* stream,
       const dnn::BatchDescriptor& input_descriptor,
       const dnn::FilterDescriptor& filter_descriptor,
-      const dnn::ConvolutionDescriptor& convolution_descriptor,
       const dnn::BatchDescriptor& output_descriptor,
+      const dnn::ConvolutionDescriptor& convolution_descriptor,
       std::vector<ProfileResult>* out_algorithms);
 
   // Returns a list of supported rnn algorithms.

@@ -1432,9 +1432,9 @@ class Conv3DBackpropInputOp<GPUDevice, T> : public OpKernel {
 #elif TENSORFLOW_USE_ROCM
       std::vector<ProfileResult> algorithms;
       CHECK(stream->parent()->GetMIOpenConvolveAlgorithms(
-          se::dnn::ConvolutionKind::BACKWARD_DATA, stream,
-          se::dnn::ToDataType<T>::value, input_desc, filter_desc, conv_desc,
-          output_desc, &algorithms));
+          se::dnn::ConvolutionKind::BACKWARD_DATA,
+          se::dnn::ToDataType<T>::value, stream, input_desc, filter_desc,
+          output_desc, conv_desc, &algorithms));
       std::vector<tensorflow::AutotuneResult> results;
       for (auto miopen_algorithm : algorithms) {
         auto profile_algorithm = miopen_algorithm.algorithm();
@@ -1879,9 +1879,9 @@ class Conv3DBackpropFilterOp<GPUDevice, T> : public OpKernel {
 #elif TENSORFLOW_USE_ROCM
       std::vector<ProfileResult> algorithms;
       CHECK(stream->parent()->GetMIOpenConvolveAlgorithms(
-          se::dnn::ConvolutionKind::BACKWARD_FILTER, stream,
-          se::dnn::ToDataType<T>::value, input_desc, filter_desc, conv_desc,
-          output_desc, &algorithms));
+          se::dnn::ConvolutionKind::BACKWARD_FILTER,
+          se::dnn::ToDataType<T>::value, stream, input_desc, filter_desc,
+          output_desc, conv_desc, &algorithms));
 
       std::vector<tensorflow::AutotuneResult> results;
       for (auto miopen_algorithm : algorithms) {

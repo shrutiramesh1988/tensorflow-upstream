@@ -133,8 +133,8 @@ StatusOr<std::vector<se::dnn::ProfileResult>> GetAlgorithms(
                       GetGpuConvParams(conv, operand_buffers, result_buffer));
 
   bool succ = stream_exec->GetMIOpenConvolveAlgorithms(
-      kind, stream, dtype, params.input_descriptor, params.filter_descriptor,
-      params.conv_desc, params.output_descriptor, &algorithms);
+      kind, dtype, stream, params.input_descriptor, params.filter_descriptor,
+      params.output_descriptor, params.conv_desc, &algorithms);
   DCHECK(succ);
 
   return algorithms;

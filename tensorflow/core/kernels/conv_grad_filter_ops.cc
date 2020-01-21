@@ -1096,9 +1096,9 @@ void LaunchConv2DBackpropFilterOp<Eigen::GpuDevice, T>::operator()(
     if (TestMIOpenBFloat16Support<T>()) {
       OP_REQUIRES(ctx,
                   stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::BACKWARD_FILTER, stream,
-                      se::dnn::ToDataType<bfloat16>::value, input_desc,
-                      filter_desc, conv_desc, output_desc, &algorithms),
+                      se::dnn::ConvolutionKind::BACKWARD_FILTER,
+                      se::dnn::ToDataType<bfloat16>::value, stream, input_desc,
+                      filter_desc, output_desc, conv_desc, &algorithms),
                   errors::Unknown(
                       "Failed to get convolution algorithm. This is probably "
                       "because MIOpen failed to initialize, so try looking to "
@@ -1106,9 +1106,9 @@ void LaunchConv2DBackpropFilterOp<Eigen::GpuDevice, T>::operator()(
     } else {
       OP_REQUIRES(ctx,
                   stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::BACKWARD_FILTER, stream,
-                      se::dnn::ToDataType<T>::value, input_desc, filter_desc,
-                      conv_desc, output_desc, &algorithms),
+                      se::dnn::ConvolutionKind::BACKWARD_FILTER,
+                      se::dnn::ToDataType<T>::value, stream, input_desc,
+                      filter_desc, output_desc, conv_desc, &algorithms),
                   errors::Unknown(
                       "Failed to get convolution algorithm. This is probably "
                       "because MIOpen failed to initialize, so try looking to "

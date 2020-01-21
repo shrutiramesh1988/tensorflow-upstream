@@ -514,9 +514,9 @@ struct LaunchConvOp<GPUDevice, T> {
       std::vector<ProfileResult> algorithms;
       OP_REQUIRES(ctx,
                   stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::FORWARD, stream,
-                      se::dnn::ToDataType<T>::value, input_desc, filter_desc,
-                      conv_desc, output_desc, &algorithms),
+                      se::dnn::ConvolutionKind::FORWARD,
+                      se::dnn::ToDataType<T>::value, stream, input_desc,
+                      filter_desc, output_desc, conv_desc, &algorithms),
                   errors::Unknown(
                       "Failed to get convolution algorithm. This is probably "
                       "because MIOpen failed to initialize, so try looking to "
