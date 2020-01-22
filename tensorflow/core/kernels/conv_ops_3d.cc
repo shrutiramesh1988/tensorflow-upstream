@@ -511,16 +511,19 @@ struct LaunchConvOp<GPUDevice, T> {
         }
       }
 #elif TENSORFLOW_USE_ROCM
+      DnnScratchAllocator scratch_allocator(ConvolveScratchSize, ctx);
+
       std::vector<ProfileResult> algorithms;
-      OP_REQUIRES(ctx,
-                  stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::FORWARD,
-                      se::dnn::ToDataType<T>::value, stream, input_desc,
-                      filter_desc, output_desc, conv_desc, &algorithms),
-                  errors::Unknown(
-                      "Failed to get convolution algorithm. This is probably "
-                      "because MIOpen failed to initialize, so try looking to "
-                      "see if a warning log message was printed above."));
+      OP_REQUIRES(
+          ctx,
+          stream->parent()->GetMIOpenConvolveAlgorithms(
+              se::dnn::ConvolutionKind::FORWARD, se::dnn::ToDataType<T>::value,
+              stream, input_desc, filter_desc, output_desc, conv_desc,
+              &scratch_allocator, &algorithms),
+          errors::Unknown(
+              "Failed to get convolution algorithm. This is probably "
+              "because MIOpen failed to initialize, so try looking to "
+              "see if a warning log message was printed above."));
       std::vector<tensorflow::AutotuneResult> results;
       if (algorithms.size() == 1) {
         auto profile_result = algorithms[0];
@@ -537,7 +540,6 @@ struct LaunchConvOp<GPUDevice, T> {
       } else {
         for (auto miopen_algorithm : algorithms) {
           auto profile_algorithm = miopen_algorithm.algorithm();
-          DnnScratchAllocator scratch_allocator(ConvolveScratchSize, ctx);
           ProfileResult profile_result;
           bool miopen_launch_status =
               stream

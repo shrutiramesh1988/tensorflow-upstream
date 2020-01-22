@@ -3044,15 +3044,17 @@ bool MIOpenSupport::GetMIOpenConvolveAlgorithms(
     const dnn::FilterDescriptor& filter_descriptor,
     const dnn::BatchDescriptor& output_descriptor,
     const dnn::ConvolutionDescriptor& convolution_descriptor,
+    ScratchAllocator* scratch_allocator,
     std::vector<dnn::ProfileResult>* out_algorithms) {
-  return use_immediate_mode_ ? GetMIOpenConvolveAlgorithmsImmediateMode(
-                                   kind, element_type, stream, input_descriptor,
-                                   filter_descriptor, output_descriptor,
-                                   convolution_descriptor, out_algorithms)
-                             : GetMIOpenConvolveAlgorithmsFindMode(
-                                   kind, element_type, stream, input_descriptor,
-                                   filter_descriptor, output_descriptor,
-                                   convolution_descriptor, out_algorithms);
+  return use_immediate_mode_
+             ? GetMIOpenConvolveAlgorithmsImmediateMode(
+                   kind, element_type, stream, input_descriptor,
+                   filter_descriptor, output_descriptor, convolution_descriptor,
+                   scratch_allocator, out_algorithms)
+             : GetMIOpenConvolveAlgorithmsFindMode(
+                   kind, element_type, stream, input_descriptor,
+                   filter_descriptor, output_descriptor, convolution_descriptor,
+                   scratch_allocator, out_algorithms);
 }
 
 bool MIOpenSupport::GetMIOpenConvolveAlgorithmsImmediateMode(
@@ -3061,6 +3063,7 @@ bool MIOpenSupport::GetMIOpenConvolveAlgorithmsImmediateMode(
     const dnn::FilterDescriptor& filter_descriptor,
     const dnn::BatchDescriptor& output_descriptor,
     const dnn::ConvolutionDescriptor& convolution_descriptor,
+    ScratchAllocator* scratch_allocator,
     std::vector<dnn::ProfileResult>* out_algorithms) {
   auto miopen = miopen_->GetHandle(parent_, stream);
 
@@ -3268,6 +3271,7 @@ bool MIOpenSupport::GetMIOpenConvolveAlgorithmsFindMode(
     const dnn::FilterDescriptor& filter_descriptor,
     const dnn::BatchDescriptor& output_descriptor,
     const dnn::ConvolutionDescriptor& convolution_descriptor,
+    ScratchAllocator* scratch_allocator,
     std::vector<dnn::ProfileResult>* out_algorithms) {
   auto miopen = miopen_->GetHandle(parent_, stream);
 

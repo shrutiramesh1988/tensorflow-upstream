@@ -1100,27 +1100,31 @@ void LaunchConv2DOp<GPUDevice, T>::operator()(
     }
 
 #elif TENSORFLOW_USE_ROCM
+    DnnScratchAllocator scratch_allocator(ConvolveScratchSize, ctx);
+
     std::vector<ProfileResult> algorithms;
     if (TestMIOpenBFloat16Support<T>()) {
       OP_REQUIRES(ctx,
                   stream->parent()->GetMIOpenConvolveAlgorithms(
                       se::dnn::ConvolutionKind::FORWARD,
                       se::dnn::ToDataType<bfloat16>::value, stream, input_desc,
-                      filter_desc, output_desc, conv_desc, &algorithms),
+                      filter_desc, output_desc, conv_desc, &scratch_allocator,
+                      &algorithms),
                   errors::Unknown(
                       "Failed to get convolution algorithm. This is probably "
                       "because MIOpen failed to initialize, so try looking to "
                       "see if a warning log message was printed above."));
     } else {
-      OP_REQUIRES(ctx,
-                  stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::FORWARD,
-                      se::dnn::ToDataType<T>::value, stream, input_desc,
-                      filter_desc, output_desc, conv_desc, &algorithms),
-                  errors::Unknown(
-                      "Failed to get convolution algorithm. This is probably "
-                      "because MIOpen failed to initialize, so try looking to "
-                      "see if a warning log message was printed above."));
+      OP_REQUIRES(
+          ctx,
+          stream->parent()->GetMIOpenConvolveAlgorithms(
+              se::dnn::ConvolutionKind::FORWARD, se::dnn::ToDataType<T>::value,
+              stream, input_desc, filter_desc, output_desc, conv_desc,
+              &scratch_allocator, &algorithms),
+          errors::Unknown(
+              "Failed to get convolution algorithm. This is probably "
+              "because MIOpen failed to initialize, so try looking to "
+              "see if a warning log message was printed above."));
     }
     se::DeviceMemory<T> output_tensor = output_ptr;
 
@@ -1140,7 +1144,6 @@ void LaunchConv2DOp<GPUDevice, T>::operator()(
     } else {
       for (auto miopen_algorithm : algorithms) {
         auto profile_algorithm = miopen_algorithm.algorithm();
-        DnnScratchAllocator scratch_allocator(ConvolveScratchSize, ctx);
         ProfileResult profile_result;
         bool miopen_launch_status = false;
         if (TestMIOpenBFloat16Support<T>()) {

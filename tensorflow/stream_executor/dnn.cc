@@ -47,6 +47,7 @@ bool DnnSupport::GetMIOpenConvolveAlgorithms(
     const dnn::FilterDescriptor& /*filter_descriptor*/,
     const dnn::BatchDescriptor& /*output_descriptor*/,
     const dnn::ConvolutionDescriptor& /*convolution_descriptor*/,
+    ScratchAllocator* scratch_allocator,
     std::vector<ProfileResult>* /*out_algorithms*/) {
   return false;
 }

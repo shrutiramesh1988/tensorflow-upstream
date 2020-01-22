@@ -1092,27 +1092,32 @@ void LaunchConv2DBackpropFilterOp<Eigen::GpuDevice, T>::operator()(
       }
     }
 #elif TENSORFLOW_USE_ROCM
+    DnnScratchAllocator scratch_allocator(ConvolveBackwardFilterScratchSize,
+                                          ctx);
+
     std::vector<ProfileResult> algorithms;
     if (TestMIOpenBFloat16Support<T>()) {
       OP_REQUIRES(ctx,
                   stream->parent()->GetMIOpenConvolveAlgorithms(
                       se::dnn::ConvolutionKind::BACKWARD_FILTER,
                       se::dnn::ToDataType<bfloat16>::value, stream, input_desc,
-                      filter_desc, output_desc, conv_desc, &algorithms),
+                      filter_desc, output_desc, conv_desc, &scratch_allocator,
+                      &algorithms),
                   errors::Unknown(
                       "Failed to get convolution algorithm. This is probably "
                       "because MIOpen failed to initialize, so try looking to "
                       "see if a warning log message was printed above."));
     } else {
-      OP_REQUIRES(ctx,
-                  stream->parent()->GetMIOpenConvolveAlgorithms(
-                      se::dnn::ConvolutionKind::BACKWARD_FILTER,
-                      se::dnn::ToDataType<T>::value, stream, input_desc,
-                      filter_desc, output_desc, conv_desc, &algorithms),
-                  errors::Unknown(
-                      "Failed to get convolution algorithm. This is probably "
-                      "because MIOpen failed to initialize, so try looking to "
-                      "see if a warning log message was printed above."));
+      OP_REQUIRES(
+          ctx,
+          stream->parent()->GetMIOpenConvolveAlgorithms(
+              se::dnn::ConvolutionKind::BACKWARD_FILTER,
+              se::dnn::ToDataType<T>::value, stream, input_desc, filter_desc,
+              output_desc, conv_desc, &scratch_allocator, &algorithms),
+          errors::Unknown(
+              "Failed to get convolution algorithm. This is probably "
+              "because MIOpen failed to initialize, so try looking to "
+              "see if a warning log message was printed above."));
     }
 
     std::vector<tensorflow::AutotuneResult> results;
@@ -1131,8 +1136,6 @@ void LaunchConv2DBackpropFilterOp<Eigen::GpuDevice, T>::operator()(
     } else {
       for (auto miopen_algorithm : algorithms) {
         auto profile_algorithm = miopen_algorithm.algorithm();
-        DnnScratchAllocator scratch_allocator(ConvolveBackwardFilterScratchSize,
-                                              ctx);
         ProfileResult profile_result;
         bool miopen_launch_status = true;
         if (TestMIOpenBFloat16Support<T>()) {
